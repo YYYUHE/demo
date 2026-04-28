@@ -3,7 +3,6 @@ package com.example.demo.config;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
@@ -13,8 +12,6 @@ public class WebConfig implements WebMvcConfigurer {
 
     @Value("${file.upload.path:uploads}")
     private String uploadPath;
-    
-    private final AuthInterceptor authInterceptor;
 
     /**
      * 配置静态资源映射
@@ -24,32 +21,5 @@ public class WebConfig implements WebMvcConfigurer {
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
         registry.addResourceHandler("/uploads/**")
                 .addResourceLocations("file:" + uploadPath + "/");
-    }
-    
-    /**
-     * 配置拦截器
-     */
-    @Override
-    public void addInterceptors(InterceptorRegistry registry) {
-        registry.addInterceptor(authInterceptor)
-                .addPathPatterns(
-                    "/index.html",
-                    "/post-editor.html",
-                    "/posts.html",
-                    "/drafts.html",
-                    "/post/**"
-                )
-                .excludePathPatterns(
-                    "/auth.html",
-                    "/api/auth/**",
-                    "/api/posts/**",
-                    "/api/drafts/**",
-                    "/api/files/**",
-                    "/api/mentions/**",
-                    "/api/comments/**",
-                    "/api/topics/**",
-                    "/api/follows/**",
-                    "/api/messages/**"
-                );
     }
 }
