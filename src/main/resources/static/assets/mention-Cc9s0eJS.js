@@ -1,0 +1,1 @@
+import{a as t}from"./index-DxD5MVZP.js";function o(e){return t({url:"/mentions/search",method:"get",params:{keyword:e}})}function s(e=1,n=20){return t({url:"/mentions/me",method:"get",params:{page:e,size:n}})}function a(e){return t({url:`/mentions/${e}/read`,method:"post"})}function m(e){return t({url:`/mentions/${e}`,method:"delete"})}export{m as d,s as g,a as m,o as s};

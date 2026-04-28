@@ -33,7 +33,7 @@
           <span class="time">{{ formatTime(mention.createTime) }}</span>
         </div>
 
-        <div class="mention-content" @click="goToPost(mention.postId, mention.commentId)">
+        <div class="mention-content" @click="goToPost(mention.postId, mention.commentId, mention.id)">
           <div class="post-title">
             <i class="icon">📝</i>
             {{ mention.postTitle }}
@@ -60,9 +60,11 @@ import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { getMyMentions, markMentionAsRead, deleteMention } from '@/api/mention'
 import { useAppStore } from '@/stores/app'
+import { useUserStore } from '@/stores/user'
 
 const router = useRouter()
 const appStore = useAppStore()
+const userStore = useUserStore()
 
 const mentions = ref([])
 const loading = ref(false)
@@ -115,8 +117,8 @@ const handleDelete = async (id) => {
   }
 }
 
-const goToPost = async (postId, commentId) => {
-  const mention = mentions.value.find(m => m.postId === postId && (!commentId || m.commentId === commentId))
+const goToPost = async (postId, commentId, mentionId) => {
+  const mention = mentions.value.find(m => m.id === mentionId)
   if (mention && !mention.isRead) {
     try {
       await markMentionAsRead(mention.id)
@@ -127,14 +129,19 @@ const goToPost = async (postId, commentId) => {
   }
   
   if (commentId) {
-    router.push(`/post/${postId}?comment=${commentId}`)
+    router.push(`/post/${postId}?commentId=${commentId}`)
   } else {
     router.push(`/post/${postId}`)
   }
 }
 
 const goToProfile = (userId) => {
-  router.push(`/profile/${userId}`)
+  const currentUserId = userStore.user?.id
+  if (currentUserId && userId === currentUserId) {
+    router.push('/profile')
+    return
+  }
+  appStore.showToast('暂不支持查看他人主页', 'error')
 }
 
 const formatTime = (timeStr) => {

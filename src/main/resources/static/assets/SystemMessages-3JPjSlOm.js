@@ -1,0 +1,1 @@
+import{M as e}from"./MessageTab-B-G85mjZ.js";import{i as o,o as r}from"./vendor-RQY8nw8f.js";import"./message-RYRAU03m.js";import"./index-DxD5MVZP.js";import"./app-C8GaQdtR.js";const n={__name:"SystemMessages",setup(s){return(t,a)=>(r(),o(e))}};export{n as default};

@@ -244,8 +244,15 @@ import { useRouter, useRoute } from 'vue-router'
 import { useAppStore } from '@/stores/app'
 import { getPostDetail, likePost, unlikePost, favoritePost, unfavoritePost } from '@/api/post'
 import { createComment, getComments, likeComment } from '@/api/comment'
+import { getUsersBasic } from '@/api/user'
 import { formatDateTime } from '@/utils/helpers'
-import { renderMentions, insertMentionToTextarea, getCaretCoordinates, getMentionSearchKeyword } from '@/utils/mention'
+import {
+  extractMentionUids,
+  renderMentions,
+  insertMentionToTextarea,
+  getCaretCoordinates,
+  getMentionSearchKeyword
+} from '@/utils/mention'
 import MentionPopup from '@/components/MentionPopup.vue'
 
 const router = useRouter()
@@ -277,11 +284,43 @@ const currentTextarea = ref(null) // 当前正在输入的textarea
 const replyingTo = ref(null)
 const replyText = ref('')
 
+const mentionUidToNameMap = ref(new Map())
+
 // 渲染帖子内容，高亮@标记
 const renderedContent = computed(() => {
   if (!post.value?.content) return ''
-  return renderMentions(post.value.content)
+  return renderMentions(post.value.content, mentionUidToNameMap.value)
 })
+
+async function refreshMentionUserMap() {
+  const ids = new Set()
+
+  extractMentionUids(post.value?.content).forEach(id => ids.add(id))
+  comments.value.forEach(comment => {
+    extractMentionUids(comment?.content).forEach(id => ids.add(id))
+    ;(comment?.replies || []).forEach(reply => {
+      extractMentionUids(reply?.content).forEach(id => ids.add(id))
+    })
+  })
+
+  const missingIds = Array.from(ids).filter(id => !mentionUidToNameMap.value.has(id))
+  if (missingIds.length === 0) return
+
+  try {
+    const res = await getUsersBasic(missingIds)
+    if (res.code === 200) {
+      const next = new Map(mentionUidToNameMap.value)
+      ;(res.data || []).forEach(user => {
+        if (user?.id != null) {
+          next.set(user.id, user.username || `用户${user.id}`)
+        }
+      })
+      mentionUidToNameMap.value = next
+    }
+  } catch (error) {
+    console.error('加载@用户信息失败:', error)
+  }
+}
 
 async function loadPost() {
   loading.value = true
@@ -292,6 +331,7 @@ async function loadPost() {
     
     if (res.code === 200) {
       post.value = res.data
+      await refreshMentionUserMap()
     } else {
       appStore.showToast('加载帖子失败', 'error')
     }
@@ -323,6 +363,7 @@ async function loadComments() {
       }
       commentTotal.value = data.total || 0
       hasMoreComments.value = data.hasMore || false
+      await refreshMentionUserMap()
     }
   } catch (error) {
     console.error('加载评论失败:', error)
@@ -576,7 +617,7 @@ function goBack() {
 
 // 渲染评论内容，高亮@标记
 function renderCommentContent(content) {
-  return renderMentions(content)
+  return renderMentions(content, mentionUidToNameMap.value)
 }
 
 onMounted(async () => {
