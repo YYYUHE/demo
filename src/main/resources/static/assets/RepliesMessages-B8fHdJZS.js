@@ -1,0 +1,1 @@
+import{M as e}from"./MessageTab-Cs2B2wAM.js";import{i as o,o as r}from"./vendor-RQY8nw8f.js";import"./message-CUXdx327.js";import"./index-USnDAwdv.js";import"./mention-KoTHcwuQ.js";import"./app-C8GaQdtR.js";const f={__name:"RepliesMessages",setup(s){return(t,a)=>(r(),o(e))}};export{f as default};

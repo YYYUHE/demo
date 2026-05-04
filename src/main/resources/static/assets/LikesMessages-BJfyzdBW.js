@@ -1,0 +1,1 @@
+import{M as e}from"./MessageTab-DBMTaHso.js";import{i as o,o as r}from"./vendor-RQY8nw8f.js";import"./message-CEWdcZKw.js";import"./index-eV3UDxQv.js";import"./mention-BQpi15uA.js";import"./app-C8GaQdtR.js";const f={__name:"LikesMessages",setup(s){return(t,a)=>(r(),o(e))}};export{f as default};

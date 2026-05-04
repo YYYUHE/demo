@@ -1,0 +1,1 @@
+import{a as t}from"./index-USnDAwdv.js";function r(e){return t({url:"/topics/popular",method:"get",params:e})}function n(e){return t({url:"/topics/get-or-create",method:"post",data:e})}function p(e){return t({url:`/topics/${encodeURIComponent(e)}/increment-usage`,method:"post"})}export{n as a,r as g,p as i};

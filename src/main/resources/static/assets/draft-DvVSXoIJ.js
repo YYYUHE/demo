@@ -1,0 +1,1 @@
+import{a as e}from"./index-eV3UDxQv.js";function s(){return e({url:"/drafts/list",method:"get"})}function a(t){return e({url:"/drafts/save",method:"post",data:t})}function f(t){return e({url:`/drafts/${t}`,method:"delete"})}export{f as d,s as g,a as s};

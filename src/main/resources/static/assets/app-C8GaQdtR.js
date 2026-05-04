@@ -1,0 +1,1 @@
+import{e as f,r as t}from"./vendor-RQY8nw8f.js";const i=f("app",()=>{const o=t(!1),s=t({show:!1,message:"",type:"success"});function a(e){o.value=e}function u(e,c="success"){s.value={show:!0,message:e,type:c},setTimeout(()=>{s.value.show=!1},3e3)}function n(){s.value.show=!1}return{loading:o,toast:s,setLoading:a,showToast:u,hideToast:n}});export{i as u};
